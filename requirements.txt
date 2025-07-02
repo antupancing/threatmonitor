@@ -1,7 +1,6 @@
 flask
 feedparser
 schedule
-sqlite3
 requests
-google-generativeai
 python-dateutil
+google-generativeai
