@@ -4,14 +4,25 @@ from datetime import datetime, timedelta, timezone
 import ast
 from threat_monitor import RSS_FEEDS
 from threat_monitor import extract_actor, extract_detection, extract_remediation
+from threat_monitor import monitor_feeds  # Import your function
+import threading
+import time
+
+def background_scheduler():
+    while True:
+        print("[⏰] Running scheduled threat check...")
+        monitor_feeds()
+        time.sleep(300)  # Run every 5 mins (adjust as needed)
+
+# Start background thread
+threading.Thread(target=background_scheduler, daemon=True).start()
+
+
+from flask import Flask, render_template
 import os
 
 app = Flask(__name__)
 DB_FILE = "threat_intel.db"
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Render's PORT or default to 5000
-    app.run(host="0.0.0.0", port=port)
 
 # === Fetch Data from Database ===
 def fetch_entries_from_db():
@@ -129,6 +140,14 @@ def dashboard():
         overall_summary=overall_summary
     )
 
+def home():
+    return render_template("dashboard.html")  # or your main route
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+    
+    
 # === Run the Flask App ===
 if __name__ == '__main__':
     app.run(debug=True)
