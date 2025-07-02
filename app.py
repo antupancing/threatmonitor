@@ -4,9 +4,14 @@ from datetime import datetime, timedelta, timezone
 import ast
 from threat_monitor import RSS_FEEDS
 from threat_monitor import extract_actor, extract_detection, extract_remediation
+import os
 
 app = Flask(__name__)
 DB_FILE = "threat_intel.db"
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Use Render's PORT or default to 5000
+    app.run(host="0.0.0.0", port=port)
 
 # === Fetch Data from Database ===
 def fetch_entries_from_db():
